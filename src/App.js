@@ -27,7 +27,7 @@ function TableRow(props) {
 }
 
 class Table extends Component {
-    fetch_leaderboard(type) {
+    fetch_leaderboard(type, button_name) {
         let that = this
          fetch(type)
             .then(function(response){
@@ -39,6 +39,7 @@ class Table extends Component {
                 that.setState({
                     list: arr,
                     url: type,
+                    button: button_name,
                 })
             }).catch(function(ex){
                 console.log('parsing failed', ex)
@@ -49,15 +50,28 @@ class Table extends Component {
         this.state = { 
             list: [] ,
             url: recent,
+            button: ''
         };
-        this.fetch_leaderboard(recent);
+        this.fetch_leaderboard(this.state.url, 'Show Alltime');
+    }
+    handleClick(){
+        if (this.state.button=='Show Alltime'){
+            this.fetch_leaderboard(alltime, 'Show Recent')
+        } else {
+            this.fetch_leaderboard(recent, 'Show Alltime')
+        }
     }
     render() {
         const tableStyle = {
             width: "100%"
         }
+        const sortButtonStyle = {
+            float: 'right',
+            marginRight: '10px',
+        }
         return (
                 <div>
+                   <button className="pt-icon-swap-vertical pt-button pt-intent-primary" style={sortButtonStyle} onClick={() => this.handleClick()}>{this.state.button}</button> 
                     <table className="pt-table pt-interactive" style={tableStyle}>
                         <thead> 
                             <tr>
@@ -68,10 +82,10 @@ class Table extends Component {
                                     Camper Name
                                 </th>
                                 <th>
-                                    Points in past 30 days
+                                    All time points
                                 </th>
                                 <th>
-                                    All time points
+                                    Points in past 30 days
                                 </th>
                             </tr>
                         </thead>
@@ -93,20 +107,21 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <nav className="pt-navbar pt-dark">
-          <div className="pt-navbar-group pt-align-left">
-            <div className="pt-navbar-heading">Camper LeaderBoard</div>
-          </div>
-          <div className="pt-navbar-group pt-align-right">
-            <button className="pt-button pt-minimal pt-icon-home">Home</button>
-            <button className="pt-button pt-minimal pt-icon-document">Files</button>
-            <span className="pt-navbar-divider"></span>
-            <button className="pt-button pt-minimal pt-icon-user"></button>
-            <button className="pt-button pt-minimal pt-icon-notifications"></button>
-            <button className="pt-button pt-minimal pt-icon-cog"></button>
-          </div>
-        </nav>
-        <Table />
+        <div>
+          <nav className="pt-navbar pt-dark">
+            <div className="pt-navbar-group pt-align-left">
+              <div className="pt-navbar-heading">Camper LeaderBoard</div>
+            </div>
+            <div className="pt-navbar-group pt-align-right">
+                <div className="pt-navbar-heading">Made by iamads</div>
+            </div>
+          </nav>
+        </div>
+        <br />
+        <br />
+        <div>
+          <Table />
+        </div>
       </div>
     );
   }
